@@ -1,0 +1,90 @@
+# ==============================================================================
+# 1. 项目基础元数据
+# ==============================================================================
+[project]
+name = "sentiment-analyze"
+version = "1.1.0"
+description = "舆情分析平台"
+requires-python = ">=3.11"
+
+# ------------------------------------------------------------------------------
+# 项目核心依赖
+# 运行 `uv sync` 时默认安装。包含 Web 框架、数据库、LLM 及 RAG 基础组件
+# ------------------------------------------------------------------------------
+dependencies = [
+    # Web 框架与 ASGI 服务驱动
+    "fastapi>=0.121.1",
+    "uvicorn>=0.37.0",
+    # 配置管理与高阶日志记录
+    "pydantic>=2.12.0",
+    "pydantic-settings>=2.11.0",
+    "python-dotenv>=1.1.1",
+    "loguru>=0.7.2",
+    # 大语言模型 (LLM) 与 AI Agent 编排框架
+    "openai>=1.109.1",
+    "langgraph>=1.0.4",
+    # 数据库驱动与 ORM (舆情库异步/同步访问)
+    "sqlalchemy>=2.0.43",
+    "aiomysql>=0.3.2",
+    "pymysql>=1.1.2",
+    # 联网搜索与 HTTP 网络请求客户端
+    "requests>=2.32.5",
+    "httpx>=0.28.1",
+    # 报告渲染引擎、加密与 RAG/分词工具
+    "mistune>=3.1",# Markdown 文本解析与渲染
+    "cryptography>=48.0.1",
+    "langchain-openai>=1.3.0",  # LangChain OpenAI 封装扩展
+    "langchain>=1.3.9",         # 大模型链式调用基础库
+    "sse-starlette>=3.4.4",     # Server-Sent Events
+    "jieba>=0.42.1",            # 中文分词工具
+    "pymilvus[model]>=2.6.0",   # Milvus 向量数据库客户端 (含 Embedding 模型扩展)
+    "modelscope>=1.39.1",
+    "langchain-anthropic>=1.7.1",
+]
+
+# ==============================================================================
+# 2. 可选扩展依赖组
+# 按需安装的扩展模块，可通过 `uv sync --extra` 单独安装
+# ==============================================================================
+[project.optional-dependencies]
+# 开发测试依赖组 (`uv sync --extra dev`)
+dev = [
+    "pytest>=9.0.2",
+    "pytest-asyncio>=1.3.0",
+]
+
+# 本地机器学习/深度学习依赖组 (`uv sync --extra ml`)
+# 用于本地向量化 (Embedding)、重排序 (Rerank) 或本地模型推理
+ml = [
+    "torch>=2.9.0",                # PyTorch 深度学习计算框架
+    "transformers>=4.57.1",        # Hugging Face 模型加载工具
+    "scikit-learn>=1.7.2",         # 传统机器学习与文本处理算法
+    "sentence-transformers>=5.1.2", # 文本向量化 (Embedding) 专用库
+    "FlagEmbedding>=1.3.5",        # 智源 BGE 向量与 Rerank 重排序模型库
+]
+
+
+# ==============================================================================
+# 3. UV 包管理器镜像源配置
+# ==============================================================================
+# 默认包下载源：使用清华大学镜像站以加速国内网络下的依赖下载
+[[tool.uv.index]]
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
+
+# 专用镜像源：PyTorch 官方 CUDA 12.8 编译轮子仓库
+# 设置 explicit = true，确保普通 PyPI 包不会误向该仓库请求
+[[tool.uv.index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+# 依赖源精确路由
+# 强制 torch 和 torchvision 从上面指定的 PyTorch CUDA 镜像源下载，避免拉取到 CPU 版本
+[tool.uv.sources]
+torch = { index = "pytorch" }
+torchvision = { index = "pytorch" }
+
+
+
+# uv sync --python=3.11.14 --all-extras
