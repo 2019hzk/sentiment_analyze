@@ -111,11 +111,11 @@ def with_retry(func: Callable):
         """
         for attempt in range(retry_config.max_retry):
             try:
-                await func(*args, **kwargs)  # 执行目标方法(解包还原)
+               return await func(*args, **kwargs)  # 执行目标方法(解包还原)
             except Exception as exc:
                 delay = retry_config.get_retry_delay(func.__name__, exc, attempt)
                 if delay is None:
                     break
                 await asyncio.sleep(delay)
 
-        return wrapper
+    return wrapper
