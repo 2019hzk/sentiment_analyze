@@ -96,3 +96,16 @@ def _source_sql() -> str:
             WHERE parent.note_id = c.note_id
         )
     """
+
+
+def topic_keys_sql_statement():
+    """仅从原帖读取非空事件标签；评论沿用所属原帖的标签。"""
+    return text("""
+        SELECT DISTINCT topic_key FROM (
+            SELECT TRIM(source_keyword) AS topic_key FROM douyin_aweme
+            UNION ALL
+            SELECT TRIM(source_keyword) AS topic_key FROM weibo_note
+        ) AS source_topics
+        WHERE topic_key IS NOT NULL AND topic_key <> ''
+        ORDER BY topic_key
+    """)

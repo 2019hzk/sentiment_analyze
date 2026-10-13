@@ -1,7 +1,7 @@
 import asyncio
 from typing import Dict, Any
 from datetime import datetime
-from atguigu.engines.agent.insight.tools.db.sql_statement import db_sql_statement
+from atguigu.engines.agent.insight.tools.db.sql_statement import db_sql_statement, topic_keys_sql_statement
 from atguigu.engines.contract.evidence import SourceDocument, ENGAGEMENT_FIELDS
 from atguigu.engines.infra.mysql import connection_manager
 
@@ -37,6 +37,12 @@ async def call_db(
 
     # 4. 结果处理
     return [_mapping_row_to_document(row) for row in rows]
+
+
+async def list_topic_keys() -> list[str]:
+    """读取原帖采集关键词"""
+    rows = await _get_db_rows(topic_keys_sql_statement(), {})
+    return [row["topic_key"] for row in rows]
 
 
 async def _get_db_rows(sql_statement: Any,

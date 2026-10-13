@@ -86,6 +86,8 @@ class ConfigSettings(BaseSettings):
     INSIGHT_SEMANTIC_ROUTING_MODEL: Optional[str] = Field(
         "BAAI/bge-small-zh-v1.5", description="用于章节语义路由的 SentenceTransformer 模型路径或名称"
     )
+
+    TYPESAFE_API_KEY: Optional[str] = Field(None, description="Jev模型 API 密钥")
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,
         env_prefix="",
