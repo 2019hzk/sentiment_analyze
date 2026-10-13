@@ -65,6 +65,6 @@ def _select_section_evidences(section_key: str,
         )
     return sorted(
         section_evidences,
-        key=lambda record: relevance_score(record),
+        key=relevance_score,
         reverse=True
     )
