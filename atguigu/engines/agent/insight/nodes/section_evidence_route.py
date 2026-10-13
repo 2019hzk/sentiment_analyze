@@ -44,7 +44,7 @@ def _group_section_evidence_ids(evidences: list[RetrievedEvidence]) -> dict[str,
     for evidence in evidences:
         section_ids: list[str] = _find_evidence_section(evidence)
         for section_id in section_ids:
-            record_ids_by_section[evidence.id].append(section_id)
+            record_ids_by_section[section_id].append(evidence.id)
     return record_ids_by_section
 
 
