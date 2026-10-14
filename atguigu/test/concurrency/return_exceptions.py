@@ -16,7 +16,7 @@ async def main():
     results = await asyncio.gather(
         task_success(),
         task_fail(),
-        return_exceptions=False
+        return_exceptions=True
     )
 
     print("返回结果列表:", results)

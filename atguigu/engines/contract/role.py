@@ -15,10 +15,10 @@ class RoleMetadata:
 
 
 ROLE_METADATA: dict[RoleId, RoleMetadata] = {
-    "insight": RoleMetadata(llm_config_prefix="INSIGHT_AGENT",display_name="私域检索专家"),
-    "media": RoleMetadata(llm_config_prefix="MEDIA_AGENT",display_name="公域检索专家"),
-    "host": RoleMetadata(llm_config_prefix="HOST_AGENT",display_name="研判专家"),
-    "report": RoleMetadata(llm_config_prefix="REPORT_ENGINE",display_name="报告引擎")
+    "insight": RoleMetadata(llm_config_prefix="INSIGHT_AGENT", display_name="私域检索专家"),
+    "media": RoleMetadata(llm_config_prefix="MEDIA_AGENT", display_name="公域检索专家"),
+    "host": RoleMetadata(llm_config_prefix="HOST_AGENT", display_name="研判专家"),
+    "report": RoleMetadata(llm_config_prefix="REPORT_ENGINE", display_name="报告引擎")
 }
 
 

@@ -1,6 +1,8 @@
 """固定报告章节定义"""
 from dataclasses import dataclass
 
+from atguigu.engines.contract.role import RoleId
+
 BACKGROUND_OVERVIEW = "background_overview"
 HEAT_AND_SPREAD = "heat_and_spread"
 SENTIMENT_AND_OPINION = "sentiment_and_opinion"
@@ -17,6 +19,23 @@ class SectionDefinition:
     insight_section_guidance: str
     media_section_guidance: str
     insight_routing_keywords: tuple[str, ...] = ()
+
+    def section_guidance_by_role(self, role: RoleId) -> str:
+        """返回研究角色对应的章节写作指导"""
+        if role == "insight":
+            return self.insight_section_guidance
+        if role == "media":
+            return self.media_section_guidance
+        raise ValueError(f"角色不支持章节写作指导: {role}")
+
+    def section_context_by_role(self, role: RoleId) -> dict[str, str]:
+        """返回章节职责供提示词使用"""
+        return {
+            "section_key": self.key,
+            "title": self.title,
+            "section_guidance": self.section_guidance_by_role(role)
+        }
+
 
 SECTION_DEFINITIONS: dict[str, SectionDefinition] = {
     BACKGROUND_OVERVIEW: SectionDefinition(
@@ -169,3 +188,16 @@ def get_insight_routing_rules() -> dict[str, tuple[str, ...]]:
         section.key: section.insight_routing_keywords
         for section in SECTION_DEFINITIONS.values()
     }
+
+
+def get_section_definitions_for_role(role: RoleId) -> list[dict[str, str]]:
+    """返回指定研究角色全部章节的职责投影"""
+    return [
+        section.section_context_by_role(role)
+        for section in SECTION_DEFINITIONS.values()
+    ]
+
+
+def get_section_definition_for_key(key: str) -> SectionDefinition:
+    """按键名查找固定章节定义,键不存在直接 KeyError"""
+    return SECTION_DEFINITIONS[key]

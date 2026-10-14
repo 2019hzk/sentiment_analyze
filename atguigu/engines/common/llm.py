@@ -164,7 +164,7 @@ class User(BaseModel):
 
 
 async def generate_object_test():
-    llm_client = LLMClient.from_role("insight")
+    llm_client = LLMClient.from_role("media")
 
     system_prompt = "你是一个数据提取专家，请严格按照要求的格式提取信息。"
     user_prompt = "张三今年 28 岁，精通 Python、LangChain 和 Docker。"
