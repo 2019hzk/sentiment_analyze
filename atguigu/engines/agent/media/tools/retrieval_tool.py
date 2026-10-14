@@ -17,6 +17,7 @@ async def retrieve_evidence(
     """按工具执行 Web 检索并返回标准化证据"""
     response = await _search_webpage(tool_name, query)
     if response is None:
+        print("xxxxx")
         return []    # 兜底
     return _map_to_evidence_records(response)
 
