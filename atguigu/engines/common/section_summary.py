@@ -5,6 +5,7 @@ from typing import Any
 from langchain_core.prompts import PromptTemplate
 from loguru import logger
 from atguigu.engines.contract.context import ResearchBaseNode
+from atguigu.engines.contract.events import publish_section_ready
 from atguigu.engines.contract.evidence import render_evidence_context
 from atguigu.engines.contract.role import get_role_display_name
 from atguigu.engines.contract.section import get_section_definition_for_key
@@ -36,6 +37,7 @@ class BaseSectionSummaryNode(ResearchBaseNode):
                 evidence_context=render_evidence_context(section_records),
             )
         logger.info(f"{agent_name} 生成章节摘要完成")
+        publish_section_ready(section, self.context.role, self.context.task_id)
         return {"sections": sections, "cursor": cursor + 1}
 
     def _query(self, state: dict[str, Any], cursor: int) -> str:
@@ -51,7 +53,6 @@ class BaseSectionSummaryNode(ResearchBaseNode):
         """调用 LLM 生成章节正文"""
         section_definition = get_section_definition_for_key(section["section_key"])
         section_context = section_definition.section_context_by_role(self.context.role)
-
 
         user_prompt = PromptTemplate.from_template(template=SECTION_SUMMARY_USER_PROMPT).format(
             section_context=json.dumps(section_context, ensure_ascii=False, indent=2),
