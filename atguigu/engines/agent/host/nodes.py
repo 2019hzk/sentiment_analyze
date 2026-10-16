@@ -1,8 +1,6 @@
 import json
 from typing import Any
-
 from loguru import logger
-
 from atguigu.engines.agent.host.discussion import build_agent_discussion_event, build_judgement_discussion_event
 from atguigu.engines.agent.host.section.judge import judge_section
 from atguigu.engines.agent.host.section.output import AgentSectionOutput

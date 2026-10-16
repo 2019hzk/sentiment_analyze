@@ -27,6 +27,7 @@ _llm_client: LLMClient = LLMClient.from_role("host")
 
 async def judge_section(section_pair: AgentSectionPair) -> SectionJudgement:
     """先由 Jev 单选裁决双方关系，再由 Host LLM 生成单章节结构化研判"""
+
     judgement_context = _build_judgement_context(section_pair)
 
     answer = await select_jev_verdict(judgement_context)
