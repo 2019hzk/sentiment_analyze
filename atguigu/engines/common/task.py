@@ -26,6 +26,9 @@ class TaskManager:
         # 3. 返回
         return research_task
 
+    def get_research_task(self, task_id: str) -> ResearchTask:
+        return self.research_tasks[task_id]
+
     def create_background_task(self, coro: Coroutine):
         """
         职责：将携程对象，交给事件循环线程在后台并发执行

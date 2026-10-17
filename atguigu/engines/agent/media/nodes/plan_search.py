@@ -21,6 +21,7 @@ class PlanSearchNode(ResearchBaseNode):
     async def __call__(self, state: MediaState) -> dict[str, Any]:
         """调用 LLM 生成搜索策略，并与固定章节定义合并为运行状态"""
         agent_name = get_role_display_name(self.context.role)
+        self.report_progress(f"{agent_name} 开始规划公域搜索策略", 10)
 
         planned_output = await self._generate_search_plan(self.context.query)
 
@@ -36,8 +37,7 @@ class PlanSearchNode(ResearchBaseNode):
                 planned_output.sections
             )
         ]
-        logger.info(f"{agent_name} 公域搜索策略规划完成")
-
+        self.report_progress(f"{agent_name} 公域搜索策略规划完成", 20)
         return {"sections": sections}
 
     async def _generate_search_plan(

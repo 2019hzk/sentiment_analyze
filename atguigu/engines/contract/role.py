@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 RoleId = Literal["insight", "media", "host", "report"]
-
+RESEARCH_AGENT_IDS: tuple[RoleId, ...] = ("insight", "media")
 
 @dataclass(slots=True)
 class RoleMetadata:

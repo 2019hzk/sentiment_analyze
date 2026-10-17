@@ -20,7 +20,7 @@ class BaseSectionSummaryNode(ResearchBaseNode):
     async def __call__(self, state: dict[str, Any]) -> dict[str, Any]:
         """按游标取证据包生成章节正文并发布就绪事件"""
         agent_name = get_role_display_name(self.context.role)
-        logger.info(f"{agent_name} 开始生成章节摘要")
+        self.report_progress(f"{agent_name} 开始生成章节摘要", 50)
 
         cursor = state.get("cursor", 0)
         sections = state["sections"]
@@ -36,7 +36,7 @@ class BaseSectionSummaryNode(ResearchBaseNode):
                 query=self._query(state, cursor),
                 evidence_context=render_evidence_context(section_records),
             )
-        logger.info(f"{agent_name} 生成章节摘要完成")
+        self.report_progress(f"{agent_name} 生成章节摘要完成", 60)
         publish_section_ready(section, self.context.role, self.context.task_id)
         return {"sections": sections, "cursor": cursor + 1}
 

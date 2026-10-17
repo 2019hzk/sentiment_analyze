@@ -25,7 +25,7 @@ class DataBaseConnectionManager:
         if self._async_engine is None:
             self._async_engine = create_async_engine(
                 url=self._build_db_url(),
-                echo=True
+                echo=False
             )
         return self._async_engine
 

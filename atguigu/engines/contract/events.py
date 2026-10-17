@@ -1,8 +1,9 @@
+from datetime import datetime
 from enum import Enum
 from typing import Any, Callable, Literal, Mapping
 
 from loguru import logger
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from atguigu.engines.contract.judgement import SectionJudgement
 from atguigu.engines.contract.role import RoleId, get_role_display_name
@@ -13,13 +14,28 @@ class EventType(str, Enum):
 
     INTERNAL_SECTION_READY = "internal_section_ready"
     EXTERNAL_HOST_DISCUSSION_MESSAGE = "external_host_discussion_message"
+    EXTERNAL_RESEARCH_AGENT_PROGRESS = "external_research_agent_progress"
+    EXTERNAL_RESEARCH_AGENT_RESULT = "external_research_agent_result"
+
+
+class RoleProgressEvent(BaseModel):
+    task_id: str
+    role: str
+    message: str
+    progress_pct: int = 0
+
+
+class RoleResultEvent(BaseModel):
+    task_id: str
+    role: str
+    error: str | None = None
 
 
 class SectionReadyEvent(BaseModel):
     task_id: str
-    source: str       # insight/media
+    source: str  # insight/media
     section_key: str  # 章节唯一标识
-    body: str         # 章节摘要内容
+    body: str  # 章节摘要内容
 
 
 class HostDiscussionMessageEvent(BaseModel):
@@ -28,6 +44,9 @@ class HostDiscussionMessageEvent(BaseModel):
     content: str
     section_key: str
     judgement: SectionJudgement | None = None
+    sent_at: str = Field(
+        default_factory=lambda: datetime.now().strftime("%H:%M:%S")
+    )
 
 
 EventCallback = Callable[[EventType, dict[str, Any]], None]
@@ -52,6 +71,16 @@ def unsubscribe(callback: EventCallback):
     """从所有事件类型中移除指定订阅回调"""
     for subscribers in _subscribers.values():
         subscribers.discard(callback)
+
+
+def publish_role_progress(event: RoleProgressEvent):
+    """发布角色研究进度事件"""
+    publish(EventType.EXTERNAL_RESEARCH_AGENT_PROGRESS, event.model_dump())
+
+
+def publish_role_result(event: RoleResultEvent):
+    """发布角色研究结果事件"""
+    publish(EventType.EXTERNAL_RESEARCH_AGENT_RESULT, event.model_dump())
 
 
 def publish_section_ready(

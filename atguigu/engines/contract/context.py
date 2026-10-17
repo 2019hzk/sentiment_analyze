@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any, Mapping, Callable
 from atguigu.engines.common.llm import LLMClient
+from atguigu.engines.contract.events import publish_role_progress, RoleProgressEvent
 from atguigu.engines.contract.role import RoleId
 
 
@@ -23,6 +24,17 @@ class ResearchBaseNode(ABC):
     def __init__(self, context: ResearchRunContext):
         """初始化研究节点的共享运行上下文"""
         self.context = context
+
+    def report_progress(self, message: str, progress_pct: int):
+        """上报当前节点执行进度"""
+        publish_role_progress(
+            RoleProgressEvent(
+                task_id=self.context.task_id,
+                role=self.context.role,
+                message=message,
+                progress_pct=progress_pct
+            )
+        )
 
     @abstractmethod
     async def __call__(self, state: dict[str, Any]) -> dict[str, Any]:

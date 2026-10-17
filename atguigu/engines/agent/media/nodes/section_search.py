@@ -15,8 +15,6 @@ class SearchNode(ResearchBaseNode):
     async def __call__(self, state: MediaState) -> dict[str, Any]:
         """遍历章节执行检索并去重"""
         agent_name = get_role_display_name(self.context.role)
-        logger.info(f"{agent_name} 开始执行公域信息搜索")
-
         query = self.context.query
         sections: list[MediaSectionState] = state.get("sections")
         section_evidence_records = []
@@ -39,8 +37,7 @@ class SearchNode(ResearchBaseNode):
             section_queries.append(
                 "\n".join([f"{search_query}" for search_query in queries])
             )
-        logger.info(f"{agent_name} 执行公域信息搜索完成")
-
+        self.report_progress(f"{agent_name} 执行公域信息搜索完成", 40)
         return {
             "section_evidence_records": section_evidence_records,
             "section_queries": section_queries

@@ -17,3 +17,9 @@ class ResearchRequest(BaseModel):
 
 class ResearchResponse(BaseModel):
     task_id: str
+
+
+class ResearchResultsResponse(BaseModel):
+    """各角色研究结果聚合响应体"""
+    task_id: str
+    results: dict[str, str] = Field(default_factory=dict)

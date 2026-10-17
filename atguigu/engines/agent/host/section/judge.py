@@ -18,8 +18,8 @@ _JEV_MODEL = "jev-latest"
 
 _VERDICT_CRITERIA: dict[str, str] = {
     "aligned": "双方核心事实与结论基本一致，仅侧重点或细节详略不同",
-    "complementary": "一方有实质分析、另一方声明数据缺口或样本视角不同，属互补而非冲突",
-    "conflicting": "双方对同一事实、成因或趋势提出了不兼容的实质性主张"
+    "complementary": "一方有具体分析而另一方声明数据缺口/缺乏支撑/无法构建，或双方观察的时间窗口、平台、层面不同，属互补而非冲突",
+    "conflicting": "双方均掌握相关数据，但对同一事实、成因或趋势提出了相互矛盾、无法同时成立的实质性主张"
 }
 
 _llm_client: LLMClient = LLMClient.from_role("host")
@@ -95,7 +95,9 @@ async def select_jev_verdict(
                     "jev_verdict": Choice(
                         instructions=(
                             "判断私域舆情研究员(insight)与公开媒体研究员(media)在同一章节的结论关系。"
-                            "单方缺少数据或双方观察不同层面时属于 complementary，只有对同一问题提出不兼容主张才属于 conflicting。"
+                            "注意：只要有一方表示'未检索到相关内容/缺乏支撑证据/无法判断或构建'，或双方观察的是不同时间窗口/不同平台/不同层面，"
+                            "一律属于 complementary（单方缺口或视角互补），严禁判为 conflicting！"
+                            "只有双方都给出了正面结论且彼此针锋相对、无法同时成立时才属于 conflicting。"
                         ),
                         criteria=_VERDICT_CRITERIA
                     )

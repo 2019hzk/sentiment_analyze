@@ -17,11 +17,10 @@ class ReportGenerateNode(ResearchBaseNode):
     async def __call__(self, state: ResearchGraphState[Any]) -> dict[str, Any]:
         """调用研究状态中的章节并生成独立报告"""
         agent_name = get_role_display_name(self.context.role)
+        self.report_progress(f"{agent_name} 开始生成独立报告", 70)
 
         query = self.context.query
         sections = state["sections"]
-        logger.info(f"开始生成独立报告,舆论话题: {query},待整合章节数: {len(sections)}")
-
         report_context = json.dumps(
             [{"title": section["title"], "body": section["body"]} for section in sections],
             ensure_ascii=False
@@ -29,7 +28,7 @@ class ReportGenerateNode(ResearchBaseNode):
 
         report_md = await self._generate_report(report_context, query)
         logger.info(f"{agent_name} 独立报告生成完成")
-
+        self.report_progress(f"{agent_name} 生成独立报告完成", 90)
         return {"final_report": report_md}
 
     async def _generate_report(self, report_context: str, query: str) -> str:

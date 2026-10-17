@@ -2,18 +2,22 @@
 import asyncio
 from typing import Any
 
+from loguru import logger
 from typesafe_sdk import AsyncTypeSafeClient, Choice
 
 from atguigu.engines.contract.context import ResearchBaseNode
 from atguigu.engines.contract.config import get_config_settings
 from atguigu.engines.agent.insight.state import InsightState
 from atguigu.engines.agent.insight.tools.db.repository import list_topic_keys
+from atguigu.engines.contract.role import get_role_display_name
 
 
 class TopicRouteNode(ResearchBaseNode):
     """读取 MySQL 事件标签，并用 Jev 选择本次研究范围"""
 
     async def __call__(self, state: InsightState) -> dict[str, Any]:
+        agent_name = get_role_display_name(self.context.role)
+        self.report_progress(f"{agent_name} 开始选择研究主题", 10)
         topics = await list_topic_keys()
 
         topic_key = await select_topic(self.context.query, topics)

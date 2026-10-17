@@ -14,19 +14,15 @@ class SectionJudgement(BaseModel):
     confidence: float = Field(default=0.0, description="Jev 裁决置信度")
     probabilities: dict[str, float] = Field(
         default_factory=dict,
-        description="Jev 裁决概率分布",
+        description="Jev 裁决概率分布"
     )
-    aligned_points: list[str] = Field(
+    key_points: list[str] = Field(
         default_factory=list,
-        description="两个 Agent 输出中相互一致的要点列表",
-    )
-    conflicts: list[str] = Field(
-        default_factory=list,
-        description="双方对同一事实、成因或趋势提出的不兼容实质性分歧列表；无实质冲突时为空列表",
+        description="围绕 Jev 预判关系提炼的核心要点（一致共识、互补维度或冲突焦点，2~4条）"
     )
     evidence_review: str = Field(
-        description="可核验性、来源限制与单方数据缺口说明",
+        description="双方数据来源差异、样本局限与单方数据缺口说明",
     )
     host_judgement: str = Field(
-        description="主持人对该章节的综合研判结论",
+        description="主持人对该章节的综合研判结论（直接面向读者陈述结论，不要提及 Jev、字段名或内部规则）"
     )

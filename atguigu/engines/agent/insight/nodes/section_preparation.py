@@ -14,7 +14,7 @@ class SectionPreparationNode(ResearchBaseNode):
     async def __call__(self, state: InsightState) -> dict[str, Any]:
         """生成固定章节状态及供摘要节点消费的章节证据列表"""
         agent_name = get_role_display_name(self.context.role)
-        logger.info(f"{agent_name} 开始固定章节与证据准备")
+        self.report_progress(f"{agent_name} 开始固定章节与证据准备", 30)
 
         sections_state: list[SectionState] = []
         section_evidence_records: list[list[RetrievedEvidence]] = []
@@ -29,7 +29,8 @@ class SectionPreparationNode(ResearchBaseNode):
             section_evidences: list[RetrievedEvidence] = _select_section_evidences(section_key, state)
             section_evidence_records.append(section_evidences[:20])
 
-        logger.info(f"{agent_name} 固定章节与证据准备完成")
+        # logger.info(f"{agent_name} 固定章节与证据准备完成")
+        self.report_progress(f"{agent_name} 固定章节与证据准备完成", 40)
         return {
             "sections": sections_state,  # 五个章节对象list[SectionSate]
             "section_evidence_records": section_evidence_records  # 章节对应的真正证据(LLM(最终参考的上下文信息))
